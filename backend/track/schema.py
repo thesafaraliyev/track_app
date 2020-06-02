@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 import graphene
+from graphql import GraphQLError
 from graphene_django import DjangoObjectType
 
 from .models import Track
@@ -12,9 +14,18 @@ class TrackType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    tracks = graphene.List(TrackType)
+    tracks = graphene.List(TrackType, search=graphene.String())
 
-    def resolve_tracks(self, info):
+    def resolve_tracks(self, info, search=None):
+        if search:
+            filters = (
+                Q(title__icontains=search) |
+                Q(description__icontains=search) |
+                Q(url__icontains=search) |
+                Q(author__username__icontains=search)
+            )
+            return Track.objects.filter(filters)
+
         return Track.objects.all()
 
 
@@ -30,7 +41,7 @@ class CreateTrack(graphene.Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception('Unauthorized.')
+            raise GraphQLError('Unauthorized.')
 
         track = Track(title=title, description=description, url=url, author=user)
         track.save()
@@ -50,12 +61,12 @@ class UpdateTrack(graphene.Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception('Unauthorized.')
+            raise GraphQLError('Unauthorized.')
 
         track = get_object_or_404(Track, id=track_id)
 
         if track.author != user:
-            raise Exception('Not permitted to update this track.')
+            raise GraphQLError('Not permitted to update this track.')
 
         track.url = url if url else track.url
         track.title = title if title else track.title
@@ -75,12 +86,12 @@ class DeleteTrack(graphene.Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception('Unauthorized')
+            raise GraphQLError('Unauthorized')
 
         track = get_object_or_404(Track, id=track_id)
 
         if track.author != user:
-            raise Exception('Not permitted to delete this track.')
+            raise GraphQLError('Not permitted to delete this track.')
 
         track.delete()
 
