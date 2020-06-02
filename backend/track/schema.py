@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 import graphene
 from graphene_django import DjangoObjectType
 
@@ -35,5 +37,57 @@ class CreateTrack(graphene.Mutation):
         return CreateTrack(track=track)
 
 
+class UpdateTrack(graphene.Mutation):
+    track = graphene.Field(TrackType)
+
+    class Arguments:
+        track_id = graphene.Int(required=True)
+        title = graphene.String()
+        description = graphene.String()
+        url = graphene.String()
+
+    def mutate(self, info, track_id, title=None, description=None, url=None):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception('Unauthorized.')
+
+        track = get_object_or_404(Track, id=track_id)
+
+        if track.author != user:
+            raise Exception('Not permitted to update this track.')
+
+        track.url = url if url else track.url
+        track.title = title if title else track.title
+        track.description = description if description else track.description
+        track.save()
+
+        return UpdateTrack(track=track)
+
+
+class DeleteTrack(graphene.Mutation):
+    track_id = graphene.Int()
+
+    class Arguments:
+        track_id = graphene.Int(required=True)
+
+    def mutate(self, info, track_id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception('Unauthorized')
+
+        track = get_object_or_404(Track, id=track_id)
+
+        if track.author != user:
+            raise Exception('Not permitted to delete this track.')
+
+        track.delete()
+
+        return DeleteTrack(track_id=track_id)
+
+
 class Mutation(graphene.ObjectType):
     create_track = CreateTrack.Field()
+    update_track = UpdateTrack.Field()
+    delete_track = DeleteTrack.Field()
