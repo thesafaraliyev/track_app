@@ -13,10 +13,10 @@ class UserType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    users = graphene.List(UserType)
+    user = graphene.Field(UserType, id=graphene.Int(required=True))
 
-    def resolve_users(self, info):
-        return User.objects.all()
+    def resolve_user(self, info, id):
+        return User.objects.get(id=id)
 
 
 class CreateUser(graphene.Mutation):
@@ -28,7 +28,8 @@ class CreateUser(graphene.Mutation):
         password = graphene.String()
 
     def mutate(self, info, username, password, email):
-        user = User(username=username, password=password, email=email)
+        user = User(username=username, email=email)
+        user.set_password(password)
         user.save()
         return CreateUser(user=user)
 
