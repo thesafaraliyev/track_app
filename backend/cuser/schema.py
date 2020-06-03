@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 
 import graphene
+from graphql import GraphQLError
 from graphene_django import DjangoObjectType
 
 User = get_user_model()
@@ -14,9 +15,17 @@ class UserType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     user = graphene.Field(UserType, id=graphene.Int(required=True))
+    me = graphene.Field(UserType)
 
     def resolve_user(self, info, id):
         return User.objects.get(id=id)
+
+    def resolve_me(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise GraphQLError('Unauthorized')
+
+        return user
 
 
 class CreateUser(graphene.Mutation):
