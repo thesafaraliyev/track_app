@@ -10,23 +10,23 @@ import withStyles from "@material-ui/core/styles/withStyles";
 // import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions";
 // import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
-const TrackList = ({ classes }) => <div>TrackList</div>;
+const TrackList = ({classes}) => <div>TrackList</div>;
 
 const styles = {
-  root: {
-    display: "flex",
-    flexWrap: "wrap"
-  },
-  details: {
-    alignItems: "center"
-  },
-  link: {
-    color: "#424242",
-    textDecoration: "none",
-    "&:hover": {
-      color: "black"
+    root: {
+        display: "flex",
+        flexWrap: "wrap"
+    },
+    details: {
+        alignItems: "center"
+    },
+    link: {
+        color: "#424242",
+        textDecoration: "none",
+        "&:hover": {
+            color: "black"
+        }
     }
-  }
 };
 
 export default withStyles(styles)(TrackList);

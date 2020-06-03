@@ -3,7 +3,7 @@ import React from "react";
 // import TrashIcon from "@material-ui/icons/DeleteForeverOutlined";
 
 const DeleteTrack = () => {
-  return <div>DeleteTrack</div>;
+    return <div>DeleteTrack</div>;
 };
 
 export default DeleteTrack;

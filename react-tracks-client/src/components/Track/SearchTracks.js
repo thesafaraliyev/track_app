@@ -6,17 +6,17 @@ import withStyles from "@material-ui/core/styles/withStyles";
 // import IconButton from "@material-ui/core/IconButton";
 // import SearchIcon from "@material-ui/icons/Search";
 
-const SearchTracks = ({ classes }) => {
-  return <div>SearchTracks</div>;
+const SearchTracks = ({classes}) => {
+    return <div>SearchTracks</div>;
 };
 
 const styles = theme => ({
-  root: {
-    padding: "2px 4px",
-    margin: theme.spacing.unit,
-    display: "flex",
-    alignItems: "center"
-  }
+    root: {
+        padding: "2px 4px",
+        margin: theme.spacing.unit,
+        display: "flex",
+        alignItems: "center"
+    }
 });
 
 export default withStyles(styles)(SearchTracks);
