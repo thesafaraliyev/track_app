@@ -49,16 +49,4 @@ const ME_QUERY = gql`
 }
 `
 
-const TRACK_LIST = gql`
-{
-  tracks {
-    id
-    title
-    description
-    url
-    
-  }
-}
-`
-
 export default withRoot(Root);

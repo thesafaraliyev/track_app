@@ -1,21 +1,106 @@
-import React from "react";
+import React, {useState} from "react";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import AddIcon from "@material-ui/icons/Add";
+import ClearIcon from "@material-ui/icons/Clear";
+import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
+
 import withStyles from "@material-ui/core/styles/withStyles";
-// import Dialog from "@material-ui/core/Dialog";
-// import DialogActions from "@material-ui/core/DialogActions";
-// import DialogContent from "@material-ui/core/DialogContent";
-// import DialogContentText from "@material-ui/core/DialogContentText";
-// import DialogTitle from "@material-ui/core/DialogTitle";
-// import FormControl from "@material-ui/core/FormControl";
-// import FormHelperText from "@material-ui/core/FormHelperText";
-// import TextField from "@material-ui/core/TextField";
-// import Button from "@material-ui/core/Button";
-// import CircularProgress from "@material-ui/core/CircularProgress";
-// import AddIcon from "@material-ui/icons/Add";
-// import ClearIcon from "@material-ui/icons/Clear";
-// import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
+
 
 const CreateTrack = ({classes}) => {
-    return <div>CreateTrack</div>;
+    const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [file, setFile] = useState("");
+
+
+    const handleAudioFile = event => {
+        const selectedFile = event.target.files[0];
+        setFile(selectedFile);
+    }
+
+    return (
+        <>
+            <Button onClick={() => setOpen(true)} className={classes.fab} variant="fab" color="secondary">
+                {open ? <ClearIcon/> : <AddIcon/>}
+            </Button>
+            <Dialog className={classes.dialog} open={open}>
+                <form>
+                    <DialogTitle>Create Track</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Add a Title, Description & Audio File
+                        </DialogContentText>
+
+                        <FormControl fullWidth>
+                            <TextField
+                                onChange={event => setTitle(event.target.value)}
+                                label="Title"
+                                placeholder="Add a title"
+                                className={classes.textField}
+                            />
+                        </FormControl>
+
+                        <FormControl fullWidth>
+                            <TextField
+                                onChange={event => setDescription(event.target.value)}
+                                multiline
+                                rows="3"
+                                label="Description"
+                                placeholder="Add a description"
+                                className={classes.textField}
+                            />
+                        </FormControl>
+
+                        <FormControl fullWidth>
+                            <input
+                                onChange={handleAudioFile}
+                                accept="audio/mp3,audio/wav"
+                                id="audio"
+                                required type="file"
+                                className={classes.input}
+                            />
+                            <label htmlFor="audio">
+                                <Button
+                                    variant="outlined"
+                                    color={file ? "secondary" : "inherit"}
+                                    component="span"
+                                    className={classes.button}
+                                >
+                                    Audio file <LibraryMusicIcon className={classes.icon}/>
+                                </Button>
+                                {file && file.name}
+                            </label>
+                        </FormControl>
+
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={() => setOpen(false)} className={classes.cancel}>
+                            Cancel
+                        </Button>
+                        <Button
+                            disabled={!file || !title.trim() || !description.trim()}
+                            type="submit"
+                            className={classes.save}
+                        >
+                            Add track
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
+        </>
+    );
 };
 
 const styles = theme => ({
