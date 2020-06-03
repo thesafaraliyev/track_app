@@ -6,13 +6,15 @@ import * as serviceWorker from "./serviceWorker";
 import {ApolloProvider} from "react-apollo";
 import ApolloClient from "apollo-boost";
 
+import Auth from './components/Auth'
+
 const client = new ApolloClient({
     uri: "http://127.0.0.1:8000/api/",
 })
 
 ReactDOM.render(
     <ApolloProvider client={client}>
-        <Root/>
+        <Auth/>
     </ApolloProvider>,
     document.getElementById("root")
 );
