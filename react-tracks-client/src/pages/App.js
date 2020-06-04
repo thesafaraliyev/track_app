@@ -11,7 +11,7 @@ import Loading from "../components/Shared/Loading";
 
 const App = ({classes}) => {
     return (
-        <div className={classes.constructor}>
+        <div className={classes.container}>
             <CreateTrack/>
             <SearchTracks/>
             <Query query={TRACK_LIST}>
@@ -32,7 +32,7 @@ const App = ({classes}) => {
 };
 
 
-const TRACK_LIST = gql`
+export const TRACK_LIST = gql`
 {
   tracks {
     id

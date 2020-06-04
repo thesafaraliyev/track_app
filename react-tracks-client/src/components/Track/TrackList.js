@@ -35,7 +35,7 @@ const TrackList = ({classes, tracks}) => {
                                     primary={track.title}
                                     secondary={<Link to={`/profile/${track.author.id}`}>{track.author.username}</Link>}
                                 />
-                                <AudioPlayer/>
+                                <AudioPlayer url={track.url}/>
                             </ListItem>
                         </ExpansionPanelSummary>
 
