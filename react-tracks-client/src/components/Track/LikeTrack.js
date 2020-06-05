@@ -1,11 +1,61 @@
-import React from "react";
-import withStyles from "@material-ui/core/styles/withStyles";
-// import IconButton from "@material-ui/core/IconButton";
-// import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import React, {useContext} from "react";
+import {Mutation} from "react-apollo";
+import {gql} from "apollo-boost";
 
-const LikeTrack = ({classes}) => {
-    return <div>LikeTrack</div>;
+import withStyles from "@material-ui/core/styles/withStyles";
+import IconButton from "@material-ui/core/IconButton";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import {UserContext, ME_QUERY} from "../../Root";
+
+const LikeTrack = ({classes, trackId, likeCount}) => {
+    const currentUser = useContext(UserContext);
+
+    const handleDisableLikedTrack = () => {
+        const userLikes = currentUser.likeSet;
+        return userLikes.findIndex(({track}) => track.id === trackId) > -1;
+        ;
+    }
+
+
+    return (
+        <Mutation
+            mutation={CREATE_LIKE}
+            variables={{trackId}}
+            onCompleted={data => {
+                console.log({data});
+            }}
+            refetchQueries={() => [{query: ME_QUERY}]}
+        >
+            {createLike => (
+                <IconButton
+                    className={classes.iconButton}
+                    onClick={event => {
+                        event.stopPropagation();
+                        createLike();
+                    }}
+                    disabled={handleDisableLikedTrack()}
+                >
+                    {likeCount}
+                    <ThumbUpIcon className={classes.icon}/>
+                </IconButton>
+            )}
+        </Mutation>
+    );
 };
+
+
+const CREATE_LIKE = gql`
+mutation ($trackId: Int!) {
+  createLike(trackId: $trackId) {
+    track {
+      id
+      likes {
+        id
+      }
+    }
+  }
+}
+`;
 
 const styles = theme => ({
     iconButton: {

@@ -41,12 +41,17 @@ const Root = () => <Query query={ME_QUERY}>
 
 </Query>;
 
-const ME_QUERY = gql`
+export const ME_QUERY = gql`
 {
   me {
     id
     username
     email
+    likeSet {
+        track {
+            id
+        }
+    }
   }
 }
 `
