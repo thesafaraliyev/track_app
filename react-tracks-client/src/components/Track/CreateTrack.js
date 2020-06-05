@@ -32,6 +32,14 @@ const CreateTrack = ({classes}) => {
     const [fileError, setFileError] = useState("");
 
 
+    // update apollo cache after creating track > 33
+    const handleCreateTrack = (cache, {data: {createTrack}}) => {
+        const data = cache.readQuery({query: TRACK_LIST});
+        const tracks = data.tracks.concat(createTrack.track);
+        cache.writeQuery({query: TRACK_LIST, data: {tracks}});
+    }
+
+
     const handleAudioFile = event => {
         const selectedFile = event.target.files[0];
 
@@ -52,7 +60,7 @@ const CreateTrack = ({classes}) => {
             formData.append('upload_preset', 'react-tracks');
             formData.append('cloud_name', 'elishka');
 
-            return 'https://api.cloudinary.com/v1_1/';
+            return 'http://res.cloudinary.com/elishka/raw/upload/v1591304079/tk7obi6rgh8sfwz5xcj3.mp3';
             const response = await axios.post('https://api.cloudinary.com/v1_1/elishka/raw/upload', formData);
             return response.data.url;
         } catch (e) {
@@ -85,7 +93,7 @@ const CreateTrack = ({classes}) => {
                     setDescription("");
                     setFile("");
                 }}
-                refetchQueries={() => [{query: TRACK_LIST}]}
+                update={handleCreateTrack}
             >
                 {(createTrack, {loading, error}) => {
                     if (error) {
@@ -183,6 +191,9 @@ mutation($title: String!, $description: String!, $url: String) {
         author {
             id
             username
+        }
+        likes {
+            id
         }
     }
   }

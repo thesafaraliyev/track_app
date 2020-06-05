@@ -12,6 +12,16 @@ const DeleteTrack = ({track}) => {
     const currentUser = useContext(UserContext);
     const isCurrentUser = currentUser.id === track.author.id;
 
+
+    const handleUpdateCache = (cache, {data: {deleteTrack}}) => {
+        const data = cache.readQuery({query: TRACK_LIST})
+        const index = data.tracks.findIndex(track => Number(track.id) === deleteTrack.trackId);
+
+        const tracks = [...data.tracks.slice(0, index), ...data.tracks.slice(index + 1)];
+
+        cache.writeQuery({query: TRACK_LIST, data: {tracks}});
+    }
+
     return isCurrentUser && (
         <Mutation
             mutation={DELETE_TRACK_MUTATION}
@@ -19,7 +29,7 @@ const DeleteTrack = ({track}) => {
             onCompleted={data => {
                 console.log(data)
             }}
-            refetchQueries={() => [{query: TRACK_LIST}]}
+            update={handleUpdateCache}
         >
             {deleteTrack => (
                 <IconButton onClick={deleteTrack}>

@@ -13,7 +13,6 @@ const LikeTrack = ({classes, trackId, likeCount}) => {
     const handleDisableLikedTrack = () => {
         const userLikes = currentUser.likeSet;
         return userLikes.findIndex(({track}) => track.id === trackId) > -1;
-        ;
     }
 
 
