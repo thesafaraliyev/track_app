@@ -11,6 +11,8 @@ import Profile from "./pages/Profile";
 import Loading from "./components/Shared/Loading";
 import Error from "./components/Shared/Error";
 
+export const UserContext = React.createContext();
+
 const Root = () => <Query query={ME_QUERY}>
     {({data, loading, error}) => {
         if (loading) {
@@ -25,13 +27,13 @@ const Root = () => <Query query={ME_QUERY}>
 
         return (
             <Router>
-                <>
+                <UserContext.Provider value={currentUser}>
                     <Header currentUser={currentUser}/>
                     <Switch>
                         <Route exact path="/" component={App}/>
                         <Route exact path="/profile/:id" component={Profile}/>
                     </Switch>
-                </>
+                </UserContext.Provider>
             </Router>
         );
     }}

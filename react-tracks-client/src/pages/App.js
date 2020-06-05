@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState}from "react";
 import {gql} from "apollo-boost";
 import {Query} from "react-apollo";
 
@@ -10,10 +10,12 @@ import Error from "../components/Shared/Error";
 import Loading from "../components/Shared/Loading";
 
 const App = ({classes}) => {
+    const [searchResults, setSearchResults] = useState([]);
+
     return (
         <div className={classes.container}>
             <CreateTrack/>
-            <SearchTracks/>
+            <SearchTracks searchResults={setSearchResults}/>
             <Query query={TRACK_LIST}>
                 {({data, loading, error}) => {
                     if (loading) {
@@ -24,7 +26,8 @@ const App = ({classes}) => {
                         return <Error error={error}/>
                     }
 
-                    return <TrackList tracks={data.tracks}/>
+                    const tracks = searchResults.length > 0 ? searchResults : data.tracks;
+                    return <TrackList tracks={tracks}/>
                 }}
             </Query>
         </div>
